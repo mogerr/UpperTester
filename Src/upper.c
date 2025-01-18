@@ -43,9 +43,9 @@ void User_SetManual(void)
     Motor_1.i_q = 0.5f;
     Motor_1.u_q = 10.5f;
     Motor_1.i_qACR.target_val = 1550.0f;
-    Motor_1.ia.Filtered = 2.02f;
-    Motor_1.ib.Filtered = -1.02f;
-    Motor_1.ic.Filtered = -1.02f;
+    Motor_1.ia.Filtered = 8.02f;
+    Motor_1.ib.Filtered = -4.55f;
+    Motor_1.ic.Filtered = -5.02f;
     Motor_1.i_sys.Filtered = 0.1642f;
 }
 #endif
@@ -57,8 +57,8 @@ void User_UppdataDataToUpper(void)
 
     for(group =0; group < 10; group++)
     {
-        Variable1[group] = (Uint16)(Motor_1.theta_mech.Calibrate * 10.0f);
-        Variable2[group] = (int16)(Motor_1.theta_ele.Calibrate);
+        Variable1[group] = (Uint16)(Motor_1.theta_mech.Calibrate * 10.0f) + group;
+        Variable2[group] = (int16)(Motor_1.theta_ele.Calibrate) + group;
         Variable8[group] = group;
     }
 
@@ -205,5 +205,5 @@ Uint16 crc16(unsigned char *data, unsigned char length)
 }
 
 
-
-
+// EB 90 36 00 00 3D 00 03 00 3D 00 03 00 3D 00 03 00 3D 00 03 00 3D 00 03 00 3D 00 03 00 3D 00 03 00 3D 00 03 00 3D 00 03 00 3D 00 03 00 0F 00 2A 00 20 00 20 00 00 00 00 00 01 00 02 00 03 00 04 00 05 00 06 00 07 00 08 00 09 00 69 03 07 00 02 FF FF FF FF 00 10 00 10 F6 D4 EB 90 36 00 00 3D 00 03 00 3D 00 03 00 3D 00 03 00 3D 00 03 00 3D 00 03 00 3D 00 03 00 3D 00 03 00 3D 00 03 00 3D 00 03 00 3D 00 03 00 0F 00 2A 00 20 00 20 00 00 00 00 00 01 00 02 00 03 00 04 00 05 00 06 00 07 00 08 00 09 00 69 03 07 00 02 FF FF FF FF 00 10 00 10 F6 D4
+// EB 90 36 00 00 3D 00 03 00 3D 00 03 00 3D 00 03 00 3D 00 03 00 3D 00 03 00 3D 00 03 00 3D 00 03 00 3D 00 03 00 3D 00 03 00 3D 00 03 00 0F 00 2A 00 20 00 20 00 00 00 00 00 01 00 02 00 03 00 04 00 05 00 06 00 07 00 08 00 09 00 69 03 07 00 02 FF FF FF FF 00 10 00 10 F6 D4 EB 90 36 00 00 3D 00 03 00 3D 00 03 00 3D 00 03 00 3D 00 03 00 3D 00 03 00 3D 00 03 00 3D 00 03 00 3D 00 03 00 3D 00 03 00 3D 00 03 00 0F 00 2A 00 20 00 20 00 00 00 00 00 01 00 02 00 03 00 04 00 05 00 06 00 07 00 08 00 09 00 69 03 07 00 02 FF FF FF FF 00 10 00 10 F6 D4

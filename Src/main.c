@@ -23,6 +23,7 @@
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
 #include "upper.h"
+#include "usbd_cdc_if.h"
 
 /* USER CODE END Includes */
 
@@ -102,9 +103,16 @@ int main(void)
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
+  User_Upper_TX_FRAME_Set();
+  // uint8_t A[90] = {0};
+  // memset(A, 'A', sizeof(A));
+
   while (1)
   {
     /* USER CODE END WHILE */
+    HAL_Delay(5U);
+    CDC_Transmit_FS( (uint8_t*)&TX_FRAME_Upper , sizeof(struct TX_FRAME_Integrated_Control));
+    // CDC_Transmit_FS( A , sizeof(A));
 
     /* USER CODE BEGIN 3 */
   }
