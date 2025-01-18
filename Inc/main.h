@@ -31,6 +31,11 @@ extern "C" {
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
+#include "stdbool.h"
+#include "stddef.h"
+#include "stdint.h"
+#define Uint16 uint16_t
+#define int16  int16_t
 
 /* USER CODE END Includes */
 
