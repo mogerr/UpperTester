@@ -110,11 +110,13 @@ int main(void)
   while (1)
   {
     /* USER CODE END WHILE */
+    /* USER CODE BEGIN 3 */
+
     HAL_Delay(5U);
     CDC_Transmit_FS( (uint8_t*)&TX_FRAME_Upper , sizeof(struct TX_FRAME_Integrated_Control));
-    // CDC_Transmit_FS( A , sizeof(A));
+    // 不断更新变化的数据
+    User_Upper_TX_FRAME_Set_Loop(0.01f);
 
-    /* USER CODE BEGIN 3 */
   }
   /* USER CODE END 3 */
 }

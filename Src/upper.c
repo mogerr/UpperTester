@@ -153,6 +153,28 @@ void User_Upper_TX_FRAME_Set(void)
     TX_FRAME_Upper.crc16[0] = (CRC16D_T & 0xff00) >> 8 ;
     TX_FRAME_Upper.crc16[1] = CRC16D_T & 0x00ff;
 }
+
+void User_Upper_TX_FRAME_Set_Loop(float interval)
+{
+    //static unsigned int i;
+    static Uint16 CRC16D_T = 0;
+
+    // 原始数据每次都改变一下
+    Motor_1.theta_mech.Calibrate += interval;
+    if(Motor_1.theta_mech.Calibrate > 6.28f){
+        Motor_1.theta_mech.Calibrate -= 6.28f;
+    }
+
+    // 准备发送数据
+    User_UppdataDataToUpper();
+    User_Presend_Var();
+
+    // CRC 校验
+    CRC16D_T = crc16( (unsigned char*) &TX_FRAME_Upper.ID, 86);
+
+    TX_FRAME_Upper.crc16[0] = (CRC16D_T & 0xff00) >> 8 ;
+    TX_FRAME_Upper.crc16[1] = CRC16D_T & 0x00ff;
+}
 #endif
 
 

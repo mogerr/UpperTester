@@ -123,6 +123,7 @@ extern int Variable15;
 #if _UpperTX_USE_16BIT_
 extern volatile struct TX_FRAME_Integrated_Control TX_FRAME_Upper;
 void User_Upper_TX_FRAME_Set(void);
+void User_Upper_TX_FRAME_Set_Loop(float interval);
 #endif
 
 #endif
