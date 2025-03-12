@@ -45,7 +45,7 @@ void User_SetManual(void)
     TX_FRAME_Upper.txcnt = 0x00;
 
     Motor_1.ID = C;
-    Motor_1.theta_mech.Calibrate = 6.111f;
+    Motor_1.theta_mech.Calibrate = 6.1f;
     Motor_1.theta_ele.Calibrate = 3.22232f;
     Motor_1.omega.Calibrate = 1542.0f;
     Motor_1.i_q = 0.0f;
@@ -65,9 +65,13 @@ void User_UppdataDataToUpper(void)
 
     for(group =0; group < 10; group++)
     {
-        Variable1[group] = (Uint16)(Motor_1.theta_mech.Calibrate * 10.0f) ;
+        // 变量 1、2、8 高速通道
+        // 每次加100, 从61、161、261、361、、、直到961
+        Variable1[group] = (Uint16)(Motor_1.theta_mech.Calibrate * 10.0f) + (100*group);
+        // 每次都不变
         Variable2[group] = (int16)(Motor_1.theta_ele.Calibrate) ;
-        Variable8[group] = 0;
+        // 每次加1, 从-5加到4
+        Variable8[group] = -5 + group;
     }
 
     Variable3 = (int16)(Motor_1.omega.Calibrate * 0.01f) ;
@@ -173,7 +177,7 @@ void User_Upper_TX_FRAME_Set_Loop(float interval)
     // if(Motor_1.theta_mech.Calibrate > 6.28f){
     //     Motor_1.theta_mech.Calibrate -= 6.28f;
     // }
-    // 改变变量7
+    // 改变变量7 (低速通道)
     Motor_1.i_q += interval;
     if(Motor_1.i_q > 32767.0f){
         Motor_1.i_q = -32768.0f;
