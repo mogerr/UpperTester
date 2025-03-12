@@ -66,12 +66,12 @@ void User_UppdataDataToUpper(void)
     for(group =0; group < 10; group++)
     {
         // 变量 1、2、8 高速通道
-        // 每次加100, 从61、161、261、361、、、直到961
-        Variable1[group] = (Uint16)(Motor_1.theta_mech.Calibrate * 10.0f) + (100*group);
-        // 每次都不变
+        // 每帧里十个值都一样，相当于当做低速通道用
+        Variable1[group] = (Uint16)(Motor_1.theta_mech.Calibrate * 10.0f) ;
+        // 每帧里十个值都一样，相当于当做低速通道用
         Variable2[group] = (int16)(Motor_1.theta_ele.Calibrate) ;
-        // 每次加1, 从-5加到4
-        Variable8[group] = -5 + group;
+        // 每帧里十个值都一样，相当于当做低速通道用
+        Variable8[group] = -5;
     }
 
     Variable3 = (int16)(Motor_1.omega.Calibrate * 0.01f) ;
@@ -172,11 +172,11 @@ void User_Upper_TX_FRAME_Set_Loop(float interval)
     static Uint16 CRC16D_T = 0;
 
     /// 原始数据每次都改变一下
-    // 改变变量1
-    // Motor_1.theta_mech.Calibrate += interval;
-    // if(Motor_1.theta_mech.Calibrate > 6.28f){
-    //     Motor_1.theta_mech.Calibrate -= 6.28f;
-    // }
+    // 改变变量1 (高速通道)
+    Motor_1.theta_mech.Calibrate += 0.1f * interval;
+    if(Motor_1.theta_mech.Calibrate > 6.2f){
+        Motor_1.theta_mech.Calibrate = 0.0f;
+    }
     // 改变变量7 (低速通道)
     Motor_1.i_q += interval;
     if(Motor_1.i_q > 32767.0f){
