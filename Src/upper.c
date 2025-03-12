@@ -167,10 +167,16 @@ void User_Upper_TX_FRAME_Set_Loop(float interval)
     //static unsigned int i;
     static Uint16 CRC16D_T = 0;
 
-    // 原始数据每次都改变一下
-    Motor_1.theta_mech.Calibrate += interval;
-    if(Motor_1.theta_mech.Calibrate > 6.28f){
-        Motor_1.theta_mech.Calibrate -= 6.28f;
+    /// 原始数据每次都改变一下
+    // 改变变量1
+    // Motor_1.theta_mech.Calibrate += interval;
+    // if(Motor_1.theta_mech.Calibrate > 6.28f){
+    //     Motor_1.theta_mech.Calibrate -= 6.28f;
+    // }
+    // 改变变量7
+    Motor_1.i_q += interval;
+    if(Motor_1.i_q > 65535.0f){
+        Motor_1.i_q = 0.5f;
     }
 
     // 准备发送数据
