@@ -48,7 +48,7 @@ void User_SetManual(void)
     Motor_1.theta_mech.Calibrate = 6.111f;
     Motor_1.theta_ele.Calibrate = 3.22232f;
     Motor_1.omega.Calibrate = 1542.0f;
-    Motor_1.i_q = 0.5f;
+    Motor_1.i_q = 0.0f;
     Motor_1.u_q = 10.5f;
     Motor_1.i_qACR.target_val = 1550.0f;
     Motor_1.ia.Filtered = 8.02f;
@@ -175,8 +175,8 @@ void User_Upper_TX_FRAME_Set_Loop(float interval)
     // }
     // 改变变量7
     Motor_1.i_q += interval;
-    if(Motor_1.i_q > 65535.0f){
-        Motor_1.i_q = 0.5f;
+    if(Motor_1.i_q > 32767.0f){
+        Motor_1.i_q = -32768.0f;
     }
 
     // 准备发送数据
