@@ -6,18 +6,30 @@ Uint16 crc16(unsigned char *data, unsigned char len);
 
 
 #if _UpperTX_USE_16BIT_
+#if _UpperTX_NoneHighSpeed_
+int Variable1 = 0;
+#else
 int Variable1[10] = {0};
+#endif
 #endif
 #if !_UpperTX_USE_16BIT_
 Uint16 Variable1[10] = {0};
 #endif
+#if _UpperTX_NoneHighSpeed_
+int Variable2 = 0;
+#else
 int Variable2[10] = {0};
+#endif
 int Variable3 = 0;
 int Variable4 = 0;
 int Variable5 = 0;
 int Variable6 = 0;
 int Variable7 = 0;
+#if _UpperTX_NoneHighSpeed_
+int Variable8 = 0;
+#else
 int Variable8[10] = {0};
+#endif
 int Variable9 = 0;
 int Variable10 = 0;
 int Variable11 = 0;
@@ -61,8 +73,12 @@ void User_SetManual(void)
 #if _UpperTX_USE_16BIT_
 void User_UppdataDataToUpper(void)
 {
+#if _UpperTX_NoneHighSpeed_
+    Variable1 = (int16)(Motor_1.theta_mech.Calibrate * 10.0f) ;
+    Variable2 = (int16)(Motor_1.theta_ele.Calibrate) ;
+    Variable8 = -5;
+#else
     unsigned int group;
-
     for(group =0; group < 10; group++)
     {
         // 变量 1、2、8 高速通道
@@ -73,6 +89,7 @@ void User_UppdataDataToUpper(void)
         // 每帧里十个值都一样，相当于当做低速通道用
         Variable8[group] = -5;
     }
+#endif
 
     Variable3 = (int16)(Motor_1.omega.Calibrate * 0.01f) ;
     Variable4 = (int16)(Motor_1.omega.Calibrate) - Variable3 * 100.0f ;
@@ -95,6 +112,55 @@ void User_UppdataDataToUpper(void)
 
 
 #if _UpperTX_USE_16BIT_
+#if _UpperTX_NoneHighSpeed_
+void User_Presend_Var(void)
+{
+    TX_FRAME_Upper.DATA[0] =  (Variable1 >> 8) & 0x00FF;
+    TX_FRAME_Upper.DATA[1] = Variable1 & 0x00FF;
+
+    TX_FRAME_Upper.DATA[2] = (Variable2 >> 8) & 0x00FF;
+    TX_FRAME_Upper.DATA[3] = Variable2 & 0x00FF;
+
+    TX_FRAME_Upper.DATA[4] = (Variable3 >> 8) & 0x00FF;
+    TX_FRAME_Upper.DATA[5] = Variable3 & 0x00FF;
+
+    TX_FRAME_Upper.DATA[6] = (Variable4 >> 8) & 0x00FF;
+    TX_FRAME_Upper.DATA[7] = Variable4 & 0x00FF;
+
+    TX_FRAME_Upper.DATA[8] = (Variable5 >> 8) & 0x00FF;
+    TX_FRAME_Upper.DATA[9] = Variable5 & 0x00FF;
+
+    TX_FRAME_Upper.DATA[10] = (Variable6 >> 8) & 0x00FF;
+    TX_FRAME_Upper.DATA[11] = Variable6 & 0x00FF;
+
+    TX_FRAME_Upper.DATA[12] = (Variable7 >> 8) & 0x00FF;
+    TX_FRAME_Upper.DATA[13] = Variable7 & 0x00FF;
+
+    TX_FRAME_Upper.DATA[14] = (Variable8 >> 8) & 0x00FF;
+    TX_FRAME_Upper.DATA[15] = Variable8 & 0x00FF;
+
+    TX_FRAME_Upper.DATA[16] = (Variable9 >> 8) & 0x00FF;
+    TX_FRAME_Upper.DATA[17] = Variable9 & 0x00FF;
+
+    TX_FRAME_Upper.DATA[18] = (Variable10 >> 8) & 0x00FF;
+    TX_FRAME_Upper.DATA[19] = Variable10 & 0x00FF;
+
+    TX_FRAME_Upper.DATA[20] = (Variable11 >> 8) & 0x00FF;
+    TX_FRAME_Upper.DATA[21] = Variable11 & 0x00FF;
+
+    TX_FRAME_Upper.DATA[22] = (Variable12 >> 8) & 0x00FF;
+    TX_FRAME_Upper.DATA[23] = Variable12 & 0x00FF;
+
+    TX_FRAME_Upper.DATA[24] = (Variable13 >> 8) & 0x00FF;
+    TX_FRAME_Upper.DATA[25] = Variable13 & 0x00FF;
+
+    TX_FRAME_Upper.DATA[26] = (Variable14 >> 8) & 0x00FF;
+    TX_FRAME_Upper.DATA[27] = Variable14 & 0x00FF;
+
+    TX_FRAME_Upper.DATA[28] = (Variable15 >> 8) & 0x00FF;
+    TX_FRAME_Upper.DATA[29] = Variable15 & 0x00FF;
+}
+#else
 void User_Presend_Var(void)
 {
     int u;
@@ -147,6 +213,7 @@ void User_Presend_Var(void)
     TX_FRAME_Upper.DATA[83] = Variable15 & 0x00FF;
 }
 #endif
+#endif
 
 #if _UpperTX_USE_16BIT_
 void User_Upper_TX_FRAME_Set(void)
@@ -160,7 +227,7 @@ void User_Upper_TX_FRAME_Set(void)
     User_Presend_Var();
 
     // CRC 校验
-    CRC16D_T = crc16( (unsigned char*) &TX_FRAME_Upper.ID, 86);
+    CRC16D_T = crc16( (unsigned char*) &TX_FRAME_Upper.ID, 32);
 
     TX_FRAME_Upper.crc16[0] = (CRC16D_T & 0xff00) >> 8 ;
     TX_FRAME_Upper.crc16[1] = CRC16D_T & 0x00ff;
@@ -172,7 +239,7 @@ void User_Upper_TX_FRAME_Set_Loop(float interval)
     static Uint16 CRC16D_T = 0;
 
     /// 原始数据每次都改变一下
-    // 改变变量1 (高速通道)
+    // 改变变量1
     Motor_1.theta_mech.Calibrate += 0.1f * interval;
     if(Motor_1.theta_mech.Calibrate > 6.2f){
         Motor_1.theta_mech.Calibrate = 0.0f;
@@ -188,7 +255,7 @@ void User_Upper_TX_FRAME_Set_Loop(float interval)
     User_Presend_Var();
 
     // CRC 校验
-    CRC16D_T = crc16( (unsigned char*) &TX_FRAME_Upper.ID, 86);
+    CRC16D_T = crc16( (unsigned char*) &TX_FRAME_Upper.ID, 32);
 
     TX_FRAME_Upper.crc16[0] = (CRC16D_T & 0xff00) >> 8 ;
     TX_FRAME_Upper.crc16[1] = CRC16D_T & 0x00ff;

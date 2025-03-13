@@ -5,6 +5,7 @@
 #include "usb_device.h"
 
 #define  _UpperTX_USE_16BIT_  1
+#define  _UpperTX_NoneHighSpeed_ 1
 
 #if _UpperTX_USE_16BIT_
 struct TX_FRAME_Integrated_Control  // 向上位机发送信息
@@ -12,7 +13,11 @@ struct TX_FRAME_Integrated_Control  // 向上位机发送信息
     unsigned char SYNC[2];
     unsigned char ID;
     unsigned char txcnt;
+#if _UpperTX_NoneHighSpeed_
+    unsigned char DATA[30];     // 16bit版本 (无高速通道，全是低速通道)
+#else
     unsigned char DATA[84];     // 16bit版本
+#endif
     unsigned char crc16[2];
 };
 #endif
@@ -100,18 +105,30 @@ typedef struct _MOTOR
 
 
 #if _UpperTX_USE_16BIT_
+#if _UpperTX_NoneHighSpeed_
+extern int Variable1;
+#else
 extern int Variable1[10];
+#endif
 #endif
 #if !_UpperTX_USE_16BIT_
 extern Uint16 Variable1[10];
 #endif
+#if _UpperTX_NoneHighSpeed_
+extern int Variable2;
+#else
 extern int Variable2[10];
+#endif
 extern int Variable3;
 extern int Variable4;
 extern int Variable5;
 extern int Variable6;
 extern int Variable7;
+#if _UpperTX_NoneHighSpeed_
+extern int Variable8;
+#else
 extern int Variable8[10];
+#endif
 extern int Variable9;
 extern int Variable10;
 extern int Variable11;
