@@ -76,7 +76,7 @@ void User_UppdataDataToUpper(void)
 #if _UpperTX_NoneHighSpeed_
     Variable1 = (int16)(Motor_1.theta_mech.Calibrate * 10.0f) ;
     Variable2 = (int16)(Motor_1.theta_ele.Calibrate) ;
-    Variable8 = -5;
+    Variable8 = (int16)(Motor_1.ic.Filtered);
 #else
     unsigned int group;
     for(group =0; group < 10; group++)
@@ -244,10 +244,45 @@ void User_Upper_TX_FRAME_Set_Loop(float interval)
     if(Motor_1.theta_mech.Calibrate > 6.2f){
         Motor_1.theta_mech.Calibrate = 0.0f;
     }
-    // 改变变量7 (低速通道)
+    // 改变变量2、变量5、变量6
+    Motor_1.theta_ele.Calibrate += 0.1f * interval;
+    if(Motor_1.theta_ele.Calibrate > 3.22232f){
+        Motor_1.theta_ele.Calibrate = 0.0f;
+    }
+    // 改变变量8、变量13
+    Motor_1.ic.Filtered += interval;
+    if(Motor_1.ic.Filtered > 1500.0f){
+        Motor_1.ic.Filtered = -1500.0f;
+    }
+    // 改变变量7
     Motor_1.i_q += interval;
     if(Motor_1.i_q > 32767.0f){
         Motor_1.i_q = -32768.0f;
+    }
+    // 改变变量9
+    Motor_1.u_q += 0.1f * interval;
+    if(Motor_1.u_q > 3276.7f){
+        Motor_1.u_q = -3276.8f;
+    }
+    // 改变变量10
+    Motor_1.i_qACR.target_val += interval;
+    if(Motor_1.i_qACR.target_val > 1550.0f){
+        Motor_1.i_qACR.target_val = -1550.0f;
+    }
+    // 改变变量11
+    Motor_1.ia.Filtered += 0.5f * interval;
+    if(Motor_1.ia.Filtered > 32767.0f){
+        Motor_1.ia.Filtered = -32768.0f;
+    }
+    // 改变变量12
+    Motor_1.ib.Filtered += 0.5f * interval;
+    if(Motor_1.ib.Filtered > 32767.0f){
+        Motor_1.ib.Filtered = -32768.0f;
+    }
+    // 改变变量14、变量15
+    Motor_1.i_sys.Filtered += 0.01f * interval;
+    if(Motor_1.i_sys.Filtered > 327.67f){
+        Motor_1.i_sys.Filtered = -327.68f;
     }
 
     // 准备发送数据

@@ -115,7 +115,7 @@ int main(void)
     HAL_Delay(5U);
     CDC_Transmit_FS( (uint8_t*)&TX_FRAME_Upper , sizeof(struct TX_FRAME_Integrated_Control));
     // 不断更新变化的数据
-    // User_Upper_TX_FRAME_Set_Loop(1.0f);
+    User_Upper_TX_FRAME_Set_Loop(1.0f);
 
   }
   /* USER CODE END 3 */
