@@ -74,6 +74,8 @@ int main(void)
 
   /* USER CODE BEGIN 1 */
 
+  uint32_t  time_rec = 0u;
+
   /* USER CODE END 1 */
 
   /* MCU Configuration--------------------------------------------------------*/
@@ -107,16 +109,23 @@ int main(void)
   // uint8_t A[90] = {0};
   // memset(A, 'A', sizeof(A));
 
+  time_rec = HAL_GetTick();
+
   while (1)
   {
     /* USER CODE END WHILE */
     /* USER CODE BEGIN 3 */
 
-    HAL_Delay(5U);
-    CDC_Transmit_FS( (uint8_t*)&TX_FRAME_Upper , sizeof(struct TX_FRAME_Integrated_Control));
-    // 不断更新变化的数据
-    User_Upper_TX_FRAME_Set_Loop(1.0f);
+    // 10ms 触发一次
+    if(HAL_GetTick() - time_rec >= 10u)
+    {
+      time_rec = HAL_GetTick();
 
+      CDC_Transmit_FS( (uint8_t*)&TX_FRAME_Upper , sizeof(struct TX_FRAME_Integrated_Control));
+      // 不断更新变化的数据
+      User_Upper_TX_FRAME_Set_Loop(1.0f);
+    }
+    
   }
   /* USER CODE END 3 */
 }
